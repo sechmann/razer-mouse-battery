@@ -1,0 +1,9 @@
+[settings]
+pin = true
+
+[tools]
+go = "1.26.1"
+
+[tasks.build]
+description = "Build the razer-mouse-battery binary"
+run = "mkdir -p bin && go build -trimpath -ldflags '-s -w' -o \"${OUT:-bin/razer-mouse-battery}\" ."
