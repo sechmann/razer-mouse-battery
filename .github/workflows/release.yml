@@ -19,10 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: macos-13
+          - runner: macos-26-intel
             goos: darwin
             goarch: amd64
-          - runner: macos-14
+          - runner: macos-26
             goos: darwin
             goarch: arm64
 
