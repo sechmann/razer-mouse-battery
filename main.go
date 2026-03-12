@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/sstallion/go-hid"
@@ -38,8 +39,9 @@ const (
 	queryBusyRetryLimit = 10
 	queryBusyRetryDelay = 10 * time.Millisecond
 
-	outputFormatCompact = "compact"
-	outputFormatHuman   = "human"
+	outputFormatCompact  = "compact"
+	outputFormatHuman    = "human"
+	outputFormatKeyValue = "keyvalue"
 
 	iconMouse = "󰍽"
 
@@ -70,7 +72,7 @@ type batteryResult struct {
 func main() {
 	productIDFlag := flag.Uint("pid", 0, "Razer product ID in hex/decimal (e.g. 0x007A). 0 probes wired+wireless defaults")
 	verbose := flag.Bool("v", false, "verbose logging")
-	format := flag.String("format", outputFormatCompact, "output format: compact|human")
+	format := flag.String("format", outputFormatCompact, "output format: compact|human|keyvalue")
 	flag.Parse()
 
 	if err := hid.Init(); err != nil {
@@ -120,8 +122,14 @@ func main() {
 		fmt.Printf("Charging: %t\n", result.charging)
 		fmt.Printf("Docked: %t\n", result.docked)
 		fmt.Printf("Source: %s\n", result.path)
+	case outputFormatKeyValue:
+		fmt.Printf("percent=%d\n", result.percent)
+		fmt.Printf("charging=%t\n", result.charging)
+		fmt.Printf("docked=%t\n", result.docked)
+		fmt.Printf("status=%s\n", statusLabel(result.charging, result.docked))
+		fmt.Printf("source=%s\n", strconv.Quote(result.path))
 	default:
-		log.Fatalf("unsupported output format %q (expected %q or %q)", *format, outputFormatCompact, outputFormatHuman)
+		log.Fatalf("unsupported output format %q (expected %q, %q, or %q)", *format, outputFormatCompact, outputFormatHuman, outputFormatKeyValue)
 	}
 }
 
@@ -347,6 +355,16 @@ func statusIcon(percent int, charging bool, docked bool) string {
 		return iconDocked
 	}
 	return iconMouse
+}
+
+func statusLabel(charging bool, docked bool) string {
+	if docked {
+		return "docked"
+	}
+	if charging {
+		return "charging"
+	}
+	return "mouse"
 }
 
 func init() {
