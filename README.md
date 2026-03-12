@@ -7,13 +7,14 @@ Read battery and charging state from supported Razer mice via HID.
 Default (`--format compact`):
 
 ```text
-<status_icon><percent>
+<mouse_or_dock_icon><percent>%
 ```
 
-Example:
+Examples:
 
 ```text
-󰍽:󰁾43
+󰍽43%
+43%
 ```
 
 `--format human` returns readable field output instead of compact icon text.

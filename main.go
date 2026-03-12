@@ -41,6 +41,8 @@ const (
 	outputFormatCompact = "compact"
 	outputFormatHuman   = "human"
 
+	iconMouse = "󰍽"
+
 	iconBatteryFull     = "󰁹"
 	iconBatteryHigh     = "󰂁"
 	iconBatteryMid      = "󰁾"
@@ -112,7 +114,7 @@ func main() {
 
 	switch *format {
 	case outputFormatCompact:
-		fmt.Printf("%s%d\n", statusIcon(result.percent, result.charging, result.docked), result.percent)
+		fmt.Printf("%s%d%%\n", statusIcon(result.percent, result.charging, result.docked), result.percent)
 	case outputFormatHuman:
 		fmt.Printf("Battery: %d%%\n", result.percent)
 		fmt.Printf("Charging: %t\n", result.charging)
@@ -341,13 +343,10 @@ func batteryIcon(percent int) string {
 }
 
 func statusIcon(percent int, charging bool, docked bool) string {
-	if docked {
+	if charging || docked {
 		return iconDocked
 	}
-	if charging {
-		return iconBatteryCharging
-	}
-	return batteryIcon(percent)
+	return iconMouse
 }
 
 func init() {
